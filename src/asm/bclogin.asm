@@ -193,7 +193,6 @@ getKey:
 	POP   BC
 	POP   HL
 
-
 	PUSH  AF
 	LD    A, 10h
 	CP    B
@@ -203,7 +202,6 @@ getKey:
 	RET
 	POP   AF
 
-
 	CP    9h
 	RET   NZ
 	PUSH  AF
@@ -212,7 +210,6 @@ getKey:
 	JR    NZ, 4h
 	POP   AF
 	JP    getKey
-
 
 	POP   AF
 	DEC   B

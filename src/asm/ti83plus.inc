@@ -16,679 +16,679 @@
 
 ;System Variable Equates
 ;------------------------------
-XSCLt			equ 2
-YSCLt			equ 3
-XMINt			equ 0Ah
-XMAXt			equ 0Bh
-YMINt			equ 0Ch
-YMAXt			equ 0Dh
-TMINt			equ 0Eh
-TMAXt			equ 0Fh
-THETMINt		equ 10h
-THETMAXt		equ 11h
-TBLMINt			equ 1Ah
-PLOTSTARTt		equ 1Bh
-NMAXt			equ 1Dh
-NMINt			equ 1Fh
-TBLSTEPt		equ 21h
-TSTEPt			equ 22h
-THETSTEPt		equ 23h
-DELTAXt			equ 26h
-DELTAYt			equ 27h
-XFACTt			equ 28h
-YFACTt			equ 29h
-FINNt			equ 2Bh
-FINIt			equ 2Ch
-FINPVt			equ 2Dh
-FINPMTt			equ 2Eh
-FINFVt			equ 2Fh
-FINPYt			equ 30h
-FINCYt			equ 31h
-PLOTSTEPt		equ 34h
-XRESt			equ 36h
+XSCLt									equ 2
+YSCLt									equ 3
+XMINt									equ 0Ah
+XMAXt									equ 0Bh
+YMINt									equ 0Ch
+YMAXt									equ 0Dh
+TMINt									equ 0Eh
+TMAXt									equ 0Fh
+THETMINt							equ 10h
+THETMAXt							equ 11h
+TBLMINt								equ 1Ah
+PLOTSTARTt						equ 1Bh
+NMAXt									equ 1Dh
+NMINt									equ 1Fh
+TBLSTEPt							equ 21h
+TSTEPt								equ 22h
+THETSTEPt							equ 23h
+DELTAXt								equ 26h
+DELTAYt								equ 27h
+XFACTt								equ 28h
+YFACTt								equ 29h
+FINNt									equ 2Bh
+FINIt									equ 2Ch
+FINPVt								equ 2Dh
+FINPMTt								equ 2Eh
+FINFVt								equ 2Fh
+FINPYt								equ 30h
+FINCYt								equ 31h
+PLOTSTEPt							equ 34h
+XRESt									equ 36h
 
 ;Run indicators
 ;------------------------------------
-busyPause		equ 10101010b
-busyNormal		equ 11110000b
+busyPause							equ 10101010b
+busyNormal						equ 11110000b
 
 ;Banked Call Equates/Macros
 ;-----------------------------------------------
-rBR_CALL		equ 28h	;NEEDED FOR APPS
-BRT_JUMP0		equ 50h
+rBR_CALL			equ 28h	;NEEDED FOR APPS
+BRT_JUMP0			equ 50h
 #define bcall(xxxx) rst 28h \ .dw xxxx
 #define bjump(xxxx) call 50h \ .dw xxxx
 
 ;Common Restart Routines
 ;------------------------------
-rOP1TOOP2		equ 08h
-rFINDSYM		equ 10h
-rPUSHREALO1		equ 18h
-rMOV9TOOP1		equ 20h
-rFPADD			equ 30h
+rOP1TOOP2							equ 08h
+rFINDSYM							equ 10h
+rPUSHREALO1						equ 18h
+rMOV9TOOP1						equ 20h
+rFPADD								equ 30h
 
 ;Error Handler Equates/Macros
 ;-------------------------------------------
-APP_PUSH_ERRORH		equ 59h
-APP_POP_ERRORH		equ 5Ch
+APP_PUSH_ERRORH				equ 59h
+APP_POP_ERRORH				equ 5Ch
 #define AppOnErr(xxxx) ld hl,xxxx \ call 59h
 #define AppOffErr call 5Ch
 
 ;Page 1Bh ROM Calls
 ;--------------------------------
-_JErrorNo		equ 4000h
-_FontHook		equ 4003h
+_JErrorNo							equ 4000h
+_FontHook							equ 4003h
 _call_character_hook	equ 4006h ;calls character(localize) hook
-_ldHLind		equ 4009h ;l=a=(hl),h=(hl+1)
-_CpHLDE			equ 400Ch
-_DivHLBy10		equ 400Fh
-_DivHLByA		equ 4012h
-_kdbScan		equ 4015h
-_GetCSC			equ 4018h ;key board scan codes
-_coorMon		equ 401Bh ;
-_Mon			equ 401Eh ;system monitor, customized through the context vectors
-_monForceKey		equ 4021h ;
-_sendKPress		equ 4024h
-_JForceCmdNoChar	equ 4027h
-_JForceCmd		equ 402Ah ;
-_sysErrHandler		equ 402Dh ;loads error context? sp=(onSP)
-_newContext		equ 4030h ;(kbdKey)=0, loads context, restores page in 4000h-7fffh
-_newContext0		equ 4033h ;loads context
-_cxPutAway		equ 4036h ;
-_cxPutAway2		equ 4039h ;same but also does a B_CALL CanAlphIns
-_cxPPutAway		equ 403Ch
-_cxSizeWind		equ 403Fh
-_cxErrEP		equ 4042h
-_cxMain			equ 4045h
-_monErrHand		equ 4048h ;installs errorhandler to start of ROM call, loads error context, jumps to mon
-_AppInit		equ 404Bh ;loads vector data at hl to cxMain and the rest of the vectors
-_resetRam		equ 404Eh
-_lcd_busy		equ 4051h ;wait till bit 1 of port 2 is set
-_Min			equ 4054h ;op1 = lowest number between op1 and op2
-_Max			equ 4057h ;op1 = highest number between op1 and op2 
-_Trunc			equ 4060h
-_InvSub			equ 4063h
-_Times2			equ 4066h
-_Plus1			equ 4069h ;op1=op1+1
-_Minus1			equ 406Ch
-_FPSub			equ 406Fh
-_FPAdd			equ 4072h
-_DToR			equ 4075h
-_RToD			equ 4078h
-_Cube			equ 407Bh
-_TimesPt5		equ 407Eh
-_FPSquare		equ 4081h
-_FPMult			equ 4084h ;op1=op1*op2
-_LJRND			equ 4087h ;adjusts op1 if 0s precede the actual number... rounding? when.
-_InvOP1SC		equ 408Ah
-_InvOP1S		equ 408Dh
-_InvOP2S		equ 4090h
-_frac			equ 4093h
-_fprecip		equ 4096h
-_fpdiv			equ 4099h
-_SqRoot			EQU 409Ch
-_RndGuard		EQU 409Fh
-_RnFx			EQU 40A2h
-_int			equ 40A5h
-_Round			EQU 40A8h
-_LnX			EQU 40ABh
-_LogX			EQU 40AEh
-_LJNORND		equ 40B1h ;like _LJRND but no rounding
-_EToX			equ 40B4h
-_TenX			equ 40B7h
-_SinCosRad		equ 40BAh
-_Sin			equ 40BDh
-_cos			equ 40C0h
-_Tan			equ 40C3h
-_SinHCosH		equ 40C6h
-_TanH			equ 40C9h
-_cosh			equ 40CCh
-_SinH			equ 40CFh
-_ACosRad		equ 40D2h
-_ATanRad		equ 40D5h
-_ATan2Rad		equ 40D8h
-_ASinRad		equ 40DBh
-_ACos			equ 40DEh
-_ATan			equ 40E1h
-_ASin			equ 40E4h
-_ATan2			equ 40E7h
-_ATanH			equ 40EAh
-_ASinH			equ 40EDh
-_ACosH			equ 40F0h
-_PtoR			equ 40F3h
-_RToP			equ 40F6h
-_HLTimes9		equ 40F9h
-_CkOP1Cplx		equ 40FCh
-_CkOP1Real		equ 40FFh
-_Angle			equ 4102h
-_COP1Set0		equ 4105h
-_CpOP4OP3		equ 4108h
-_Mov9OP2Cp		equ 410Bh
-_AbsO1O2Cp		equ 410Eh
-_cpop1op2		equ 4111h
-_OP3ToOP4		equ 4114h
-_OP1ToOP4		equ 4117h
-_OP2ToOP4		equ 411Ah
-_OP4ToOP2		equ 411Dh
-_OP1ToOP3		equ 4123h
-_OP5ToOP2		equ 4126h
-_OP5ToOP6		equ 4129h
-_OP5ToOP4		equ 412Ch
-_OP1ToOP2		equ 412Fh
-_OP6ToOP2		equ 4132h
-_OP6ToOP1		equ 4135h
-_OP4ToOP1		equ 4138h
-_OP5ToOP1		equ 413Bh
-_OP3ToOP1		equ 413Eh
-_OP6ToOP5		equ 4141h
-_OP4ToOP5		equ 4144h
-_OP3ToOP5		equ 4147h
-_OP2ToOP5		equ 414Ah
-_OP2ToOP6		equ 414Dh
-_OP1ToOP6		equ 4150h
-_OP1ToOP5		equ 4153h
-_OP2ToOP1		equ 4156h
-_Mov11B			equ 4159h
-_Mov10B			equ 415Ch
-_Mov9B			equ 415Fh
-_mov9B2			equ 4162h ;points to _mov9B
-_Mov8B			equ 4165h
-_Mov7B			equ 4168h
-_Mov7B2			equ 416bh ;same pointer as _Mov7B
-_OP2ToOP3		equ 416Eh
-_OP4ToOP3		equ 4171h
-_OP5ToOP3		equ 4174h
-_OP4ToOP6		equ 4177h
-_Mov9ToOP1		equ 417Ah
-_Mov9OP1OP2		equ 417Dh
-_Mov9ToOP2		equ 4180h
-_MovFrOP1		equ 4183h
-_OP4Set1		equ 4186h
-_OP3Set1		equ 4189h
-_OP2Set8		equ 418Ch
-_OP2Set5		equ 418Fh
-_OP2SetA		equ 4192h
-_OP2Set4		equ 4195h
-_OP2Set3		equ 4198h
-_OP1Set1		equ 419Bh
-_OP1Set4		equ 419Eh
-_OP1Set3		equ 41A1h
-_OP3Set2		equ 41A4h
-_OP1Set2		equ 41A7h
-_OP2Set2		equ 41AAh
-_OP2Set1		equ 41ADh
-_Zero16D		equ 41B0h
-_OP5Set0		equ 41B3h
-_OP4Set0		equ 41B6h
-_OP3Set0		equ 41B9h
-_OP2Set0		equ 41BCh
-_OP1Set0		equ 41BFh
-_OPSet0			equ 41C2h ;hl = location to write floating point 0
-_ZeroOP1		equ 41C5h
-_ZeroOP2		equ 41C8h
-_ZeroOP3		equ 41CBh
-_ZeroOP			equ 41CEh
-_ClrLp			equ 41D1h
-_ShRAcc			equ 41D4h ;move high nibble in a to low nibble
-_ShLAcc			equ 41D7h ;move low nibble in a to high nibble
-_ShR18			equ 41DAh ;insert a 0 nibble at high nibble of (hl), shift 9 bytes 1 nibble to right
-_SHR18A			equ 41DDh ;insert low nibble in a at high nibble of (hl), shift 9 bytes 1 nibble to right
-_SHR16			equ 41E0h ;insert a 0 nibble at highnibble of (hl), shift 8 bytes 1 nibble to right
-_SHR14			equ 41E3h ;insert low nibble in a at high nibble of (hl), shift 7 bytes 1 nibble to right
-_SHL16			equ 41E6h ;insert nibble of 0 in low nibble of (hl), shift 8 bytes (before and including (hl)) to the left 1 nibble
-_SHL14			equ 41E9h ;insert low nibble of a in low nibble of (hl), shift 7 bytes (before and including (hl)) to the left 1 nibble
-_SRDO1			equ 41ECh
-_SHRDRND		equ 41EFh
-_MANTPA			equ 41F2h ;adds the value of a to hl which points to the end of the bcd 7 bytes long
-_ADDPROP		equ 41F5h ;adds the value of a to hl which points to the end of the bcd (b bytes long)
-_ADDPROPLP		equ 41F8h ;adds the value of a and carry to hl which points to the end of the bcd (b bytes long)
-_ADD16D 		equ 41FBh ;adds the bcd numbers at (hl-7) and (de-7)
-_ADD14D			equ 41FEh ;adds the bcd numbers at (hl-6) and (de-6)
-_SUB16D			equ 4201h ;subtracts bcd numbers at (hl-7) and (de-7)
-_SUB14D			equ 4204h ;subtracts bcd numbers at (hl-6) and (de-6)
-_OP2ExOP6		equ 4207h
-_OP5ExOP6		equ 420Ah
-_OP1ExOP5		equ 420Dh
-_OP1ExOP6		equ 4210h
-_OP2ExOP4		equ 4213h
-_OP2ExOP5		equ 4216h
-_OP1ExOP3		equ 4219h
-_OP1ExOP4		equ 421Ch
-_OP1ExOP2		equ 421Fh
-_ExLp			equ 4222h
-_CkOP1C0		equ 4225h
-_CkOP1FP0		equ 4228h
-_CkOP2FP0		equ 422Bh
-_PosNo0Int		equ 422Eh
-_CKPosInt		equ 4231h
-_CKInt			equ 4234h
-_CKOdd			equ 4237h
-_CKOP1M			equ 423Ah
-_GETCONOP1		equ 423Dh ;a=0 opX=57.29577951308232 (1 radian in degrees)
-_GETCONOP2		equ 4240h ;a=1 opX=1.570796326794897 (90 deg = pi/2)
-				  ;a=2 opX=.7853981633974483 (45 deg = pi/4)
-				  ;a=3 opX=.4342944819032518 (log e)
-				  ;a=4 opX=3.141592653589800 (pi)
-				  ;a=5 opX=.0174532925199433 (pi/180 = 1 degree in radians)
-				  ;a=6 opX=2.302585092994046 (ln 10)
-_PIDIV2			equ 4243h ;not code, but a pointer to:	.db 80h,15h,70h,79h,63h,26h,79h,48h,97h
-_PIDIV4			equ 4246h ;				.db 7fh,78h,53h,98h,16h,33h,97h,44h,83h
-_ExpToHex		equ 424Fh
-_OP1ExpToDec		equ 4252h
-_ckop2pos		equ 4255h
-_CkOP1Pos		equ 4258h
-_ClrOP2S		equ 425Bh
-_ClrOP1S		equ 425Eh
-_FDIV100		equ 4261h ;op1=op1/100
-_FDIV10			equ 4264h ;op1=op1/10
-_DecO1Exp		equ 4267h ;decrease exponent by 1, this can go from 0 to FF
-_INCO1EXP		equ 426Ah ;op1=op1*10
-_INCEXP			equ 426dh ;hl points to the floating point's exponent to be multiplied by 10
-_CkValidNum		equ 4270h
-_GETEXP			equ 4273h ;a=op1's exponent, carry set if negative exponent, z if e0
-_HTimesL		equ 4276h
-_EOP1NotReal		equ 4279h
-_ThetaName		equ 427Ch
-_RName			equ 427Fh
-_REGEQNAME		equ 4282h
-_RECURNNAME		equ 4285h
-_XName			equ 4288h
-_YName			equ 428Bh
-_TName			equ 428Eh
-_REALNAME		equ 4291h
-_SETesTOfps		equ 4294h ;moves the word at fps to es
-_markTableDirty		equ 4297h ;looks up table variable and marks VAT entry as "dirty" or selected
-_OP1MOP2EXP		equ 429Ah ;op1's exponent = op1's expoent - op2's exponent
-_OP1EXPMinusE		equ 429Dh ;a=(op1+1)-e
-_CHKERRBREAK		equ 42A0h
-_isA2ByteTok		equ 42A3h
-_GETLASTENTRY		equ 42A6h
-_GETLASTENTRYPTR	equ 42A9h
-_REGCLRCHNG		equ 42ACh
-_RESETWINTOP		equ 42AFh ;takes into account grfsplitoverride and grfsplit flags
-_SetYUp			equ 42B2h ;loads 7 to port 10... what does this do?
-_SetXUp			equ 42B5h ;loads 5 to port 10...
-_ISO1NONTLSTorPROG	equ 42B8h ;checks if op1 contains a list, program, group, or appvar obj name
-_ISO1NONTEMPLST		equ 42BBh ;checks if op1 contains a list (why would op1+1 contain 01, or 0d for a var name?)
-_IS_A_LSTorCLST		equ 42BEh ;checks if a = 1 or 0Dh
-_CHK_HL_999		equ 42C1h ;returns nc if less than 999, throws invalid dim error if greater than or equal to 999
-_equ_or_newequ		equ 42C4h
-_errd_op1notpos		equ 42C7h
-_ErrD_OP1Not_R		equ 42CAh
-_ErrD_OP1NotPosInt 	equ 42CDh
-_ErrD_OP1_LE_0		equ 42D0h
-_ErrD_OP1_0		equ 42D3h
-_FINDSYM_GET_SIZE 	equ 42D6h ;like findsym, but on output hl is the size of the variable
-_STO_STATVAR		equ 42d9h
-_Rcl_StatVar		equ 42DCh
-_CkOP2Real		equ 42DFh
-_GET_X_INDIRECT		equ 42E2h ;what ever this is, it uses the imathptrX locations
-_MemChk			equ 42E5h
-_CMPPRGNAMLEN1		equ 42E8h ;what do these do?
-_CMPPRGNAMLEN		equ 42EBh
-_FINDPROGSYM		equ 42EEh ;find the program whose name is in op1 (see chkfindsym in SDK)
-_ChkFindSym		equ 42F1h
-_FindSym		equ 42F4h
-_InsertMem		equ 42F7h
-_INSERTMEMA		equ 42FAh ;not sure how this differs from insertmem
-_EnoughMem		equ 42FDh
-_CMPMEMNEED		equ 4300h
-_CREATEPVAR4		equ 4303h
-_CREATEPVAR3		equ 4306h
-_CREATEVAR3		equ 4309h
-_CreateCplx		equ 430Ch
-_CreateReal		equ 430Fh
-_CreateTempRList	equ 4312h
-_CreateRList		equ 4315h
-_CREATETCLIST		equ 4318h
-_CreateCList		equ 431Bh
-_CreateRMat		equ 4321h
-_CreateTempString	equ 4324h
-_CreateStrng		equ 4327h
-_Create0Equ		equ 432Ah
-_CreateTempEqu		equ 432Dh
-_CreateEqu		equ 4330h
-_CreatePict		equ 4333h
-_CreateGDB		equ 4336h
-_CreateProg		equ 4339h
-_CHKDEL			equ 433Ch
-_CHKDELA		equ 433Fh
-_ADJPARSER		equ 4342h
-_ADJMATH		equ 4345h
-_ADJM7			equ 4348h
-_DELMEMA		equ 434Bh
-_GET_FORM_NUM		equ 434Eh
-_DelVar			equ 4351h
-_DELVARIO		equ 4354h
-_DelMem			equ 4357h
-_DELVAR3D		equ 435Ah
-_DELVAR3C		equ 435Dh
-_DELVAR3DC		equ 4360h ;may be incorrect
-_DataSizeA		equ 4369h
-_DataSize		equ 436Ch
-_POPMCPLXO1		equ 436Fh
-_POPMCPLX		equ 4372h
-_MOVCPLX		equ 4375h
-_popOP5			equ 4378h
-_popOP3			equ 437Bh
-_popOP1			equ 437Eh
-_PopRealO6		equ 4381h
-_PopRealO5		equ 4384h
-_PopRealO4		equ 4387h
-_PopRealO3		equ 438Ah
-_PopRealO2		equ 438Dh
-_PopRealO1		equ 4390h
-_PopReal		equ 4393h
-_FPOPCPLX		equ 4396h
-_FPOPREAL		equ 4399h
-_FPOPFPS		equ 439Ch
-_DeallocFPS		equ 439Fh
-_DeallocFPS1		equ 43a2h
-_AllocFPS		equ 43A5h
-_AllocFPS1		equ 43A8h
-_PushRealO6		equ 43ABh
-_PushRealO5		equ 43AEh
-_PushRealO4		equ 43B1h
-_PushRealO3		equ 43B4h
-_PushRealO2		equ 43B7h
-_PushRealO1		equ 43BAh
-_PushReal		equ 43BDh
-_PushOP5		equ 43C0h
-_PushOP3		equ 43C3h
-_PUSHMCPLXO3		equ 43C6h
-_PushOP1		equ 43C9h
-_PUSHMCPLXO1		equ 43CCh
-_PUSHMCPLX		equ 43CFh
-_ExMCplxO1		equ 43D2h
-_Exch9			equ 43D5h
-_CpyTo1FPS11		equ 43D8h
-_CpyTo2FPS5		equ 43DBh
-_CpyTo1FPS5		equ 43DEh
-_CpyTo2FPS6		equ 43E1h
-_CpyTo1FPS6		equ 43E4h
-_CpyTo2FPS7		equ 43E7h
-_CpyTo1FPS7		equ 43EAh
-_CpyTo1FPS8		equ 43EDh
-_CpyTo2FPS8		equ 43F0h
-_CpyTo1FPS10		equ 43F3h
-_CpyTo1FPS9		equ 43F6h
-_CpyTo2FPS4		equ 43F9h
-_CpyTo6FPS3		equ 43FCh
-_CpyTo6FPS2		equ 43FFh
-_CpyTo2FPS3		equ 4402h
-_CPYCTO1FPS3		equ 4405h
-_CpyTo1FPS3		equ 4408h
-_CPYFPS3		equ 440Bh
-_CpyTo1FPS4		equ 440Eh
-_CpyTo3FPS2		equ 4411h
-_CpyTo5FPST		equ 4414h
-_CpyTo6FPST		equ 4417h
-_CpyTo4FPST		equ 441Ah
-_CpyTo3FPST		equ 441Dh
-_CpyTo2FPST		equ 4420h
-_CpyTo1FPST		equ 4423h
-_CPYFPST		equ 4426h
-_CpyStack		equ 4429h
-_CpyTo3FPS1		equ 442Ch
-_CpyTo2FPS1		equ 442Fh
-_CpyTo1FPS1		equ 4432h
-_CPYFPS1		equ 4435h
-_CpyTo2FPS2		equ 4438h
-_CpyTo1FPS2		equ 443Bh
-_CPYFPS2		equ 443Eh
-_CpyO3ToFPST		equ 4441h
-_CpyO2ToFPST		equ 4444h
-_CpyO6ToFPST		equ 4447h
-_CpyO1ToFPST		equ 444Ah
-_CpyToFPST		equ 444Dh
-_CpyToStack		equ 4450h
-_CpyO3ToFPS1		equ 4453h
-_CpyO5ToFPS1		equ 4456h
-_CpyO2ToFPS1		equ 4459h
-_CpyO1ToFPS1		equ 445Ch
-_CpyToFPS1		equ 445Fh
-_CpyO2ToFPS2		equ 4462h
-_CpyO3ToFPS2		equ 4465h
-_CpyO6ToFPS2		equ 4468h
-_CpyO1ToFPS2		equ 446Bh
-_CpyToFPS2		equ 446Eh
-_CpyO5ToFPS3		equ 4471h
-_CpyO2ToFPS3		equ 4474h
-_CpyO1ToFPS3		equ 4477h
-_CpyToFPS3		equ 447Ah
-_CpyO1ToFPS6		equ 447Dh
-_CpyO1ToFPS7		equ 4480h
-_CpyO1ToFPS5		equ 4483h
-_CpyO2ToFPS4		equ 4486h
-_CpyO1ToFPS4		equ 4489h
-_ErrNotEnoughMem 	equ 448Ch
-_FPSMINUS9		equ 448Fh
-_HLMINUS9		equ 4492h
-_ErrOverflow		equ 4495h
-_ErrDivBy0		equ 4498h
-_ErrSingularMat		equ 449Bh
-_ErrDomain		equ 449Eh
-_ErrIncrement		equ 44A1h
-_ErrNon_Real		equ 44A4h
-_ErrSyntax		equ 44A7h
-_ErrDataType		equ 44AAh
-_ErrArgument		equ 44ADh
-_ErrDimMismatch		equ 44B0h
-_ErrDimension		equ 44B3h
-_ErrUndefined		equ 44B6h
-_ErrMemory		equ 44B9h
-_ErrInvalid		equ 44BCh
-_ErrBreak		equ 44BFh
-_ErrStat		equ 44C2h
-_ErrSignChange		equ 44C5h
-_ErrIterations		equ 44C8h
-_ErrBadGuess		equ 44CBh
-_ErrTolTooSmall		equ 44CEh
-_ErrStatPlot		equ 44D1h
-_ErrLinkXmit		equ 44D4h
-_JError			equ 44D7h
-_noErrorEntry		equ 44DAh
-_pushErrorHandleR	equ 44DDh
-_popErrorHandleR	equ 44E0h
-_strcopy		equ 44E3h
-_strCat			equ 44E6h
-_isInSet		equ 44E9h
-_sDone			equ 44ECh
-_serrort		equ 44EFh
-_sNameEq		equ 44F2h
-_sUnderScr		equ 44F5h
-_sFAIL			equ 44F8h
-_sName			equ 44FBh
-_sOK			equ 44FEh
-_PutMap			equ 4501h
-_PutC			equ 4504h
-_DispHL			equ 4507h
-_PutS			equ 450Ah
-_putpsb			equ 450Dh
-_PutPS			equ 4510h
-_wputps			equ 4513h
-_putbuf			equ 4516h
-_putbuf1		equ 4519h
-_wputc			equ 451Ch
-_wputs			equ 451Fh
-_wputsEOL		equ 4522h ;displays string in HL in big font, and uses ... if too long
-_wdispEOL		equ 4525h
-_whomeup		equ 4528h
-_setNumWindow		equ 452Bh ;based on current cursor position, sets winleft and similar (for input prompts)
-_newline		equ 452Eh
-_moveDown		equ 4531h
-_scrollUp		equ 4534h
-_shrinkWindow		equ 4537h
-_moveUp			equ 453Ah
-_scrollDown		equ 453Dh
-_ClrLCDFull		equ 4540h
-_ClrLCD			equ 4543h
-_ClrScrnFull		equ 4546h
-_ClrScrn		equ 4549h
-_ClrTxtShd		equ 454Ch
-_ClrWindow		equ 454Fh
-_EraseEOL		equ 4552h
-_EraseEOW		equ 4555h
-_HomeUp			equ 4558h
-_getcurloc		equ 455Bh
-_VPutMap		equ 455Eh
-_VPutS			equ 4561h
-_VPutSN			equ 4564h
-_vputsnG		equ 4567h
-_vputsnT		equ 456Ah
-_RunIndicOn		equ 456Dh
-_RunIndicOff		equ 4570h
-_saveCmdShadow		equ 4573h
-_saveShadow		equ 4576h
-_rstrShadow		equ 4579h
-_rstrpartial		equ 457Ch
-_rstrCurRow		equ 457Fh
-_rstrUnderMenu		equ 4582h
-_rstrbotrow		equ 4585h
-_saveTR			equ 4588h ;save top right corner of LCD so 2nd arrow can be displayed, indicinuse flag must be set
-_restoreTR		equ 458bh ;restore top right corner of LCD destroyed by an arrow. indicinuse flag must be set
-_GetKeyPress		equ 458Eh
-_GetTokLen		equ 4591h ;input: hl=pointer to token. output: a=lenght of string, hl=pointer to string on page 1
-_GET_TOK_STRNG		equ 4594h ;input: hl=pointer to token. output: op3=string of the token, a=length of string
-_GETTOKSTRING		equ 4597h ;input: DE=token. output: hl=pointer to the string on page 1
-_PUTBPATBUF2		equ 459Ah
-_PUTBPATBUF		equ 459Dh
-_putbPAT		equ 45A0h
-_putcCheckScrolL	equ 45A3h
-_DispEOL		equ 45A6h
-_fdispEOL		equ 45A9h
-_MAKEROWCMD		equ 45ACh
-_TOTOSTRP		equ 45AFh
-_SETVARNAME		equ 45B2h
-_DispDone		equ 45B5h
-_finishoutput		equ 45B8h
-_curBlink		equ 45BBh
-_CursorOff		equ 45BEh
-_hideCursor		equ 45C1h
-_CursorOn		equ 45C4h
-_showCursor		equ 45C7h
-_KeyToString		equ 45CAh
-_PULLDOWNCHK		equ 45CDh ;something wrong here
-_MenuCatCommon		equ 45D0h
-_ZIfCatalog		equ 45D3h
-_ZIfMatrixMenu		equ 45D6h ;_loadCurCat
-_LoadMenuNum		equ 45D9h
-_LoadMenuNumL		equ 45DCh
-_MenCatRet		equ 45DFh ;restores display as though a menu were just cleared (restores some flags too)
-_MenuEdKey		equ 45E5h
-_notalphnum		equ 45EBh
-_SaveSavedFlags		equ 45EEh
-_SetMenuFlags		equ 45F1h
-_RstrSomeFlags		equ 45F4h
-_RstrOScreen		equ 45F7h ;restores saveSScreen to the display
-_SaveOScreen		equ 45FAh ;stores display in saveSScreen
-_dispListName		equ 45FDh ;_SeeIfErrorCx
-_AdrMRow		equ 4606h
-_AdrMEle		equ 4609h
-_GETMATOP1A		equ 460Ch
-_GETM1TOOP1		equ 460Fh
-_GETM1TOP1A		equ 4612h
-_GetMToOP1		equ 4615h
-_PUTTOM1A		equ 4618h
-_PUTTOMA1		equ 461Bh
-_PutToMat		equ 461Eh
-_MAT_EL_DIV		equ 4621h
-_CMATFUN		equ 4624h
-_ROWECH_POLY		equ 4627h
-_ROWECHELON		equ 462Ah
-_AdrLEle		equ 462Dh
-_GETL1TOOP1		equ 4630h
-_GETL1TOP1A		equ 4633h
-_GetLToOP1		equ 4636h
-_GETL1TOOP2		equ 4639h
-_GETL1TOP2A		equ 463Ch
-_GETL2TOP1A		equ 463Fh
-_PUTTOLA1		equ 4642h
-_PutToL			equ 4645h
-_MAXMINLST		equ 4648h
-_LLOW			equ 464Bh
-_LHIGH			equ 464Eh
-_LSUM			equ 4651h
-CUMSUM			equ 4654h
-_ToFrac			equ 4657h
-_SEQSET			equ 465Ah
-_SEQSOLVE		equ 465Dh
-_CMP_NUM_INIT		equ 4660h
-_BinOPExec		equ 4663h
-_EXMEAN1		equ 4666h
-_SET2MVLPTRS		equ 4669h
-_SETMAT1		equ 466Ch
-_CREATETLIST		equ 466Fh
-_UnOPExec		equ 4672h
-_ThreeExec		equ 4675h
-_RESTOREERRNO		equ 4678h
-_FourExec		equ 467Bh
-_FiveExec		equ 467Eh
-_CPYTO2ES1		equ 4681h
-_CPYTO6ES1		equ 4684h
-_CPYTO1ES1		equ 4687h
-_CPYTO3ES1		equ 468Ah
-_CPYTO3ES2		equ 468Dh
-_CPYTO2ES2		equ 4690h
-_CPYTO1ES2		equ 4693h
-_CPYTO2ES3		equ 4696h
-_CPYTO1ES3		equ 4699h
-_CPYTO3ES4		equ 469Ch
-_CPYTO6ES3		equ 469Fh
-_CPYTO2ES4		equ 46A2h
-_CPYTO1ES4		equ 46A5h
-_CPYTO2ES5		equ 46A8h
-_CPYTO1ES5		equ 46ABh
-_CPYTO4EST		equ 46AEh
-_CPYTO2EST		equ 46B1h
-_CPYTO1EST		equ 46B4h
-_CPYTO2ES6		equ 46B7h
-_CPYTO1ES6		equ 46BAh
-_CPYTO2ES7		equ 46BDh
-_CPYTO1ES7		equ 46C0h
-_CPYTO2ES8		equ 46C3h
-_CPYTO1ES8		equ 46C6h
-_CPYTO1ES9		equ 46C9h
-_CPYTO2ES9		equ 46CCh
-_CPYTO2ES10		equ 46CFh
-_CPYTO1ES10		equ 46D2h
-_CPYTO2ES11		equ 46D5h
-_CPYTO1ES11		equ 46D8h
-_CPYTO2ES12		equ 46DBh
-_CPYTO1ES12		equ 46DEh
-_CPYTO2ES13		equ 46E1h
-_CPYTO1ES13		equ 46E4h
-_CPYTO1ES14		equ 46E7h
-_CPYTO1ES16		equ 46EAh
-_CPYTO1ES17		equ 46EDh
-_CPYTO1ES18		equ 46F0h
-_CPYTO1ES15		equ 46F3h
-_CPYTO2ES15		equ 46F6h
-_CPYO1TOEST		equ 46F9h
-_CPYO1TOES1		equ 46FCh
-_CPYO6TOES1		equ 46FFh
-_CPYO6TOES3		equ 4702h
-_CPYO1TOES2		equ 4705h
-_CPYO2TOES2		equ 4708h
-_CPYO1TOES3		equ 470Bh
-_CPYO1TOES4		equ 470Dh
-_CPYO1TOES5		equ 4711h
-_CPYO1TOES6		equ 4714h
-_CPYO1TOES7		equ 4717h
-_CPYO2TOES4		equ 471Ah
-_CPYO2TOES5		equ 471Dh
-_CPYO2TOES6		equ 4720h
-_CPYO2TOES7		equ 4723h
-_CPYO2TOES8		equ 4726h
-_CPYO2TOES9		equ 4729h
-_CPYO1TOES8		equ 472Ch
-_CPYO1TOES9		equ 472Fh
-_CPYO1TOES10		equ 4732h
-_CPYO1TOES11		equ 4735h
-_CPYO1TOES12		equ 4738h
-_CPYO1TOES13		equ 473Bh
-_CPYO1TOES14		equ 473Eh
-_CPYO1TOES15		equ 4741h
+_ldHLind							equ 4009h ;l=a=(hl),h=(hl+1)
+_CpHLDE								equ 400Ch
+_DivHLBy10						equ 400Fh
+_DivHLByA							equ 4012h
+_kdbScan							equ 4015h
+_GetCSC								equ 4018h ;key board scan codes
+_coorMon							equ 401Bh ;
+_Mon									equ 401Eh ;system monitor, customized through the context vectors
+_monForceKey					equ 4021h ;
+_sendKPress						equ 4024h
+_JForceCmdNoChar			equ 4027h
+_JForceCmd						equ 402Ah ;
+_sysErrHandler				equ 402Dh ;loads error context? sp=(onSP)
+_newContext						equ 4030h ;(kbdKey)=0, loads context, restores page in 4000h-7fffh
+_newContext0					equ 4033h ;loads context
+_cxPutAway						equ 4036h ;
+_cxPutAway2						equ 4039h ;same but also does a B_CALL CanAlphIns
+_cxPPutAway						equ 403Ch
+_cxSizeWind						equ 403Fh
+_cxErrEP							equ 4042h
+_cxMain								equ 4045h
+_monErrHand						equ 4048h ;installs errorhandler to start of ROM call, loads error context, jumps to mon
+_AppInit							equ 404Bh ;loads vector data at hl to cxMain and the rest of the vectors
+_resetRam							equ 404Eh
+_lcd_busy							equ 4051h ;wait till bit 1 of port 2 is set
+_Min									equ 4054h ;op1 = lowest number between op1 and op2
+_Max									equ 4057h ;op1 = highest number between op1 and op2 
+_Trunc								equ 4060h
+_InvSub								equ 4063h
+_Times2								equ 4066h
+_Plus1								equ 4069h ;op1=op1+1
+_Minus1								equ 406Ch
+_FPSub								equ 406Fh
+_FPAdd								equ 4072h
+_DToR									equ 4075h
+_RToD									equ 4078h
+_Cube									equ 407Bh
+_TimesPt5							equ 407Eh
+_FPSquare							equ 4081h
+_FPMult								equ 4084h ;op1=op1*op2
+_LJRND								equ 4087h ;adjusts op1 if 0s precede the actual number... rounding? when.
+_InvOP1SC							equ 408Ah
+_InvOP1S							equ 408Dh
+_InvOP2S							equ 4090h
+_frac									equ 4093h
+_fprecip							equ 4096h
+_fpdiv								equ 4099h
+_SqRoot								EQU 409Ch
+_RndGuard							EQU 409Fh
+_RnFx									EQU 40A2h
+_int									equ 40A5h
+_Round								EQU 40A8h
+_LnX									EQU 40ABh
+_LogX									EQU 40AEh
+_LJNORND							equ 40B1h ;like _LJRND but no rounding
+_EToX									equ 40B4h
+_TenX									equ 40B7h
+_SinCosRad						equ 40BAh
+_Sin									equ 40BDh
+_cos									equ 40C0h
+_Tan									equ 40C3h
+_SinHCosH							equ 40C6h
+_TanH									equ 40C9h
+_cosh									equ 40CCh
+_SinH									equ 40CFh
+_ACosRad							equ 40D2h
+_ATanRad							equ 40D5h
+_ATan2Rad							equ 40D8h
+_ASinRad							equ 40DBh
+_ACos									equ 40DEh
+_ATan									equ 40E1h
+_ASin									equ 40E4h
+_ATan2								equ 40E7h
+_ATanH								equ 40EAh
+_ASinH								equ 40EDh
+_ACosH								equ 40F0h
+_PtoR									equ 40F3h
+_RToP									equ 40F6h
+_HLTimes9							equ 40F9h
+_CkOP1Cplx						equ 40FCh
+_CkOP1Real						equ 40FFh
+_Angle								equ 4102h
+_COP1Set0							equ 4105h
+_CpOP4OP3							equ 4108h
+_Mov9OP2Cp						equ 410Bh
+_AbsO1O2Cp						equ 410Eh
+_cpop1op2							equ 4111h
+_OP3ToOP4							equ 4114h
+_OP1ToOP4							equ 4117h
+_OP2ToOP4							equ 411Ah
+_OP4ToOP2							equ 411Dh
+_OP1ToOP3							equ 4123h
+_OP5ToOP2							equ 4126h
+_OP5ToOP6							equ 4129h
+_OP5ToOP4							equ 412Ch
+_OP1ToOP2							equ 412Fh
+_OP6ToOP2							equ 4132h
+_OP6ToOP1							equ 4135h
+_OP4ToOP1							equ 4138h
+_OP5ToOP1							equ 413Bh
+_OP3ToOP1							equ 413Eh
+_OP6ToOP5							equ 4141h
+_OP4ToOP5							equ 4144h
+_OP3ToOP5							equ 4147h
+_OP2ToOP5							equ 414Ah
+_OP2ToOP6							equ 414Dh
+_OP1ToOP6							equ 4150h
+_OP1ToOP5							equ 4153h
+_OP2ToOP1							equ 4156h
+_Mov11B								equ 4159h
+_Mov10B								equ 415Ch
+_Mov9B								equ 415Fh
+_mov9B2								equ 4162h ;points to _mov9B
+_Mov8B								equ 4165h
+_Mov7B								equ 4168h
+_Mov7B2								equ 416bh ;same pointer as _Mov7B
+_OP2ToOP3							equ 416Eh
+_OP4ToOP3							equ 4171h
+_OP5ToOP3							equ 4174h
+_OP4ToOP6							equ 4177h
+_Mov9ToOP1						equ 417Ah
+_Mov9OP1OP2						equ 417Dh
+_Mov9ToOP2						equ 4180h
+_MovFrOP1							equ 4183h
+_OP4Set1							equ 4186h
+_OP3Set1							equ 4189h
+_OP2Set8							equ 418Ch
+_OP2Set5							equ 418Fh
+_OP2SetA							equ 4192h
+_OP2Set4							equ 4195h
+_OP2Set3							equ 4198h
+_OP1Set1							equ 419Bh
+_OP1Set4							equ 419Eh
+_OP1Set3							equ 41A1h
+_OP3Set2							equ 41A4h
+_OP1Set2							equ 41A7h
+_OP2Set2							equ 41AAh
+_OP2Set1							equ 41ADh
+_Zero16D							equ 41B0h
+_OP5Set0							equ 41B3h
+_OP4Set0							equ 41B6h
+_OP3Set0							equ 41B9h
+_OP2Set0							equ 41BCh
+_OP1Set0							equ 41BFh
+_OPSet0								equ 41C2h ;hl = location to write floating point 0
+_ZeroOP1							equ 41C5h
+_ZeroOP2							equ 41C8h
+_ZeroOP3							equ 41CBh
+_ZeroOP								equ 41CEh
+_ClrLp								equ 41D1h
+_ShRAcc								equ 41D4h ;move high nibble in a to low nibble
+_ShLAcc								equ 41D7h ;move low nibble in a to high nibble
+_ShR18								equ 41DAh ;insert a 0 nibble at high nibble of (hl), shift 9 bytes 1 nibble to right
+_SHR18A								equ 41DDh ;insert low nibble in a at high nibble of (hl), shift 9 bytes 1 nibble to right
+_SHR16								equ 41E0h ;insert a 0 nibble at highnibble of (hl), shift 8 bytes 1 nibble to right
+_SHR14								equ 41E3h ;insert low nibble in a at high nibble of (hl), shift 7 bytes 1 nibble to right
+_SHL16								equ 41E6h ;insert nibble of 0 in low nibble of (hl), shift 8 bytes (before and including (hl)) to the left 1 nibble
+_SHL14								equ 41E9h ;insert low nibble of a in low nibble of (hl), shift 7 bytes (before and including (hl)) to the left 1 nibble
+_SRDO1								equ 41ECh
+_SHRDRND							equ 41EFh
+_MANTPA								equ 41F2h ;adds the value of a to hl which points to the end of the bcd 7 bytes long
+_ADDPROP							equ 41F5h ;adds the value of a to hl which points to the end of the bcd (b bytes long)
+_ADDPROPLP						equ 41F8h ;adds the value of a and carry to hl which points to the end of the bcd (b bytes long)
+_ADD16D 							equ 41FBh ;adds the bcd numbers at (hl-7) and (de-7)
+_ADD14D								equ 41FEh ;adds the bcd numbers at (hl-6) and (de-6)
+_SUB16D								equ 4201h ;subtracts bcd numbers at (hl-7) and (de-7)
+_SUB14D								equ 4204h ;subtracts bcd numbers at (hl-6) and (de-6)
+_OP2ExOP6							equ 4207h
+_OP5ExOP6							equ 420Ah
+_OP1ExOP5							equ 420Dh
+_OP1ExOP6							equ 4210h
+_OP2ExOP4							equ 4213h
+_OP2ExOP5							equ 4216h
+_OP1ExOP3							equ 4219h
+_OP1ExOP4							equ 421Ch
+_OP1ExOP2							equ 421Fh
+_ExLp									equ 4222h
+_CkOP1C0							equ 4225h
+_CkOP1FP0							equ 4228h
+_CkOP2FP0							equ 422Bh
+_PosNo0Int						equ 422Eh
+_CKPosInt							equ 4231h
+_CKInt								equ 4234h
+_CKOdd								equ 4237h
+_CKOP1M								equ 423Ah
+_GETCONOP1						equ 423Dh ;a=0 opX=57.29577951308232 (1 radian in degrees)
+_GETCONOP2						equ 4240h ;a=1 opX=1.570796326794897 (90 deg = pi/2)
+				  											;a=2 opX=.7853981633974483 (45 deg = pi/4)
+				  											;a=3 opX=.4342944819032518 (log e)
+				  											;a=4 opX=3.141592653589800 (pi)
+				  											;a=5 opX=.0174532925199433 (pi/180 = 1 degree in radians)
+				  											;a=6 opX=2.302585092994046 (ln 10)
+_PIDIV2								equ 4243h ;not code, but a pointer to:	.db 80h,15h,70h,79h,63h,26h,79h,48h,97h
+_PIDIV4								equ 4246h ;				.db 7fh,78h,53h,98h,16h,33h,97h,44h,83h
+_ExpToHex							equ 424Fh
+_OP1ExpToDec					equ 4252h
+_ckop2pos							equ 4255h
+_CkOP1Pos							equ 4258h
+_ClrOP2S							equ 425Bh
+_ClrOP1S							equ 425Eh
+_FDIV100							equ 4261h ;op1=op1/100
+_FDIV10								equ 4264h ;op1=op1/10
+_DecO1Exp							equ 4267h ;decrease exponent by 1, this can go from 0 to FF
+_INCO1EXP							equ 426Ah ;op1=op1*10
+_INCEXP								equ 426dh ;hl points to the floating point's exponent to be multiplied by 10
+_CkValidNum						equ 4270h
+_GETEXP								equ 4273h ;a=op1's exponent, carry set if negative exponent, z if e0
+_HTimesL							equ 4276h
+_EOP1NotReal					equ 4279h
+_ThetaName						equ 427Ch
+_RName								equ 427Fh
+_REGEQNAME						equ 4282h
+_RECURNNAME						equ 4285h
+_XName								equ 4288h
+_YName								equ 428Bh
+_TName								equ 428Eh
+_REALNAME							equ 4291h
+_SETesTOfps						equ 4294h ;moves the word at fps to es
+_markTableDirty				equ 4297h ;looks up table variable and marks VAT entry as "dirty" or selected
+_OP1MOP2EXP						equ 429Ah ;op1's exponent = op1's expoent - op2's exponent
+_OP1EXPMinusE					equ 429Dh ;a=(op1+1)-e
+_CHKERRBREAK					equ 42A0h
+_isA2ByteTok					equ 42A3h
+_GETLASTENTRY					equ 42A6h
+_GETLASTENTRYPTR			equ 42A9h
+_REGCLRCHNG						equ 42ACh
+_RESETWINTOP					equ 42AFh ;takes into account grfsplitoverride and grfsplit flags
+_SetYUp								equ 42B2h ;loads 7 to port 10... what does this do?
+_SetXUp								equ 42B5h ;loads 5 to port 10...
+_ISO1NONTLSTorPROG		equ 42B8h ;checks if op1 contains a list, program, group, or appvar obj name
+_ISO1NONTEMPLST				equ 42BBh ;checks if op1 contains a list (why would op1+1 contain 01, or 0d for a var name?)
+_IS_A_LSTorCLST				equ 42BEh ;checks if a = 1 or 0Dh
+_CHK_HL_999						equ 42C1h ;returns nc if less than 999, throws invalid dim error if greater than or equal to 999
+_equ_or_newequ				equ 42C4h
+_errd_op1notpos				equ 42C7h
+_ErrD_OP1Not_R				equ 42CAh
+_ErrD_OP1NotPosInt 		equ 42CDh
+_ErrD_OP1_LE_0				equ 42D0h
+_ErrD_OP1_0						equ 42D3h
+_FINDSYM_GET_SIZE 		equ 42D6h ;like findsym, but on output hl is the size of the variable
+_STO_STATVAR					equ 42d9h
+_Rcl_StatVar					equ 42DCh
+_CkOP2Real						equ 42DFh
+_GET_X_INDIRECT				equ 42E2h ;what ever this is, it uses the imathptrX locations
+_MemChk								equ 42E5h
+_CMPPRGNAMLEN1				equ 42E8h ;what do these do?
+_CMPPRGNAMLEN					equ 42EBh
+_FINDPROGSYM					equ 42EEh ;find the program whose name is in op1 (see chkfindsym in SDK)
+_ChkFindSym						equ 42F1h
+_FindSym							equ 42F4h
+_InsertMem						equ 42F7h
+_INSERTMEMA						equ 42FAh ;not sure how this differs from insertmem
+_EnoughMem						equ 42FDh
+_CMPMEMNEED						equ 4300h
+_CREATEPVAR4					equ 4303h
+_CREATEPVAR3					equ 4306h
+_CREATEVAR3						equ 4309h
+_CreateCplx						equ 430Ch
+_CreateReal						equ 430Fh
+_CreateTempRList			equ 4312h
+_CreateRList					equ 4315h
+_CREATETCLIST					equ 4318h
+_CreateCList					equ 431Bh
+_CreateRMat						equ 4321h
+_CreateTempString			equ 4324h
+_CreateStrng					equ 4327h
+_Create0Equ						equ 432Ah
+_CreateTempEqu				equ 432Dh
+_CreateEqu						equ 4330h
+_CreatePict						equ 4333h
+_CreateGDB						equ 4336h
+_CreateProg						equ 4339h
+_CHKDEL								equ 433Ch
+_CHKDELA							equ 433Fh
+_ADJPARSER						equ 4342h
+_ADJMATH							equ 4345h
+_ADJM7								equ 4348h
+_DELMEMA							equ 434Bh
+_GET_FORM_NUM					equ 434Eh
+_DelVar								equ 4351h
+_DELVARIO							equ 4354h
+_DelMem								equ 4357h
+_DELVAR3D							equ 435Ah
+_DELVAR3C							equ 435Dh
+_DELVAR3DC						equ 4360h ;may be incorrect
+_DataSizeA						equ 4369h
+_DataSize							equ 436Ch
+_POPMCPLXO1						equ 436Fh
+_POPMCPLX							equ 4372h
+_MOVCPLX							equ 4375h
+_popOP5								equ 4378h
+_popOP3								equ 437Bh
+_popOP1								equ 437Eh
+_PopRealO6						equ 4381h
+_PopRealO5						equ 4384h
+_PopRealO4						equ 4387h
+_PopRealO3						equ 438Ah
+_PopRealO2						equ 438Dh
+_PopRealO1						equ 4390h
+_PopReal							equ 4393h
+_FPOPCPLX							equ 4396h
+_FPOPREAL							equ 4399h
+_FPOPFPS							equ 439Ch
+_DeallocFPS						equ 439Fh
+_DeallocFPS1					equ 43a2h
+_AllocFPS							equ 43A5h
+_AllocFPS1						equ 43A8h
+_PushRealO6						equ 43ABh
+_PushRealO5						equ 43AEh
+_PushRealO4						equ 43B1h
+_PushRealO3						equ 43B4h
+_PushRealO2						equ 43B7h
+_PushRealO1						equ 43BAh
+_PushReal							equ 43BDh
+_PushOP5							equ 43C0h
+_PushOP3							equ 43C3h
+_PUSHMCPLXO3					equ 43C6h
+_PushOP1							equ 43C9h
+_PUSHMCPLXO1					equ 43CCh
+_PUSHMCPLX						equ 43CFh
+_ExMCplxO1						equ 43D2h
+_Exch9								equ 43D5h
+_CpyTo1FPS11					equ 43D8h
+_CpyTo2FPS5						equ 43DBh
+_CpyTo1FPS5						equ 43DEh
+_CpyTo2FPS6						equ 43E1h
+_CpyTo1FPS6						equ 43E4h
+_CpyTo2FPS7						equ 43E7h
+_CpyTo1FPS7						equ 43EAh
+_CpyTo1FPS8						equ 43EDh
+_CpyTo2FPS8						equ 43F0h
+_CpyTo1FPS10					equ 43F3h
+_CpyTo1FPS9						equ 43F6h
+_CpyTo2FPS4						equ 43F9h
+_CpyTo6FPS3						equ 43FCh
+_CpyTo6FPS2						equ 43FFh
+_CpyTo2FPS3						equ 4402h
+_CPYCTO1FPS3					equ 4405h
+_CpyTo1FPS3						equ 4408h
+_CPYFPS3							equ 440Bh
+_CpyTo1FPS4						equ 440Eh
+_CpyTo3FPS2						equ 4411h
+_CpyTo5FPST						equ 4414h
+_CpyTo6FPST						equ 4417h
+_CpyTo4FPST						equ 441Ah
+_CpyTo3FPST						equ 441Dh
+_CpyTo2FPST						equ 4420h
+_CpyTo1FPST						equ 4423h
+_CPYFPST							equ 4426h
+_CpyStack							equ 4429h
+_CpyTo3FPS1						equ 442Ch
+_CpyTo2FPS1						equ 442Fh
+_CpyTo1FPS1						equ 4432h
+_CPYFPS1							equ 4435h
+_CpyTo2FPS2						equ 4438h
+_CpyTo1FPS2						equ 443Bh
+_CPYFPS2							equ 443Eh
+_CpyO3ToFPST					equ 4441h
+_CpyO2ToFPST					equ 4444h
+_CpyO6ToFPST					equ 4447h
+_CpyO1ToFPST					equ 444Ah
+_CpyToFPST						equ 444Dh
+_CpyToStack						equ 4450h
+_CpyO3ToFPS1					equ 4453h
+_CpyO5ToFPS1					equ 4456h
+_CpyO2ToFPS1					equ 4459h
+_CpyO1ToFPS1					equ 445Ch
+_CpyToFPS1						equ 445Fh
+_CpyO2ToFPS2					equ 4462h
+_CpyO3ToFPS2					equ 4465h
+_CpyO6ToFPS2					equ 4468h
+_CpyO1ToFPS2					equ 446Bh
+_CpyToFPS2						equ 446Eh
+_CpyO5ToFPS3					equ 4471h
+_CpyO2ToFPS3					equ 4474h
+_CpyO1ToFPS3					equ 4477h
+_CpyToFPS3						equ 447Ah
+_CpyO1ToFPS6					equ 447Dh
+_CpyO1ToFPS7					equ 4480h
+_CpyO1ToFPS5					equ 4483h
+_CpyO2ToFPS4					equ 4486h
+_CpyO1ToFPS4					equ 4489h
+_ErrNotEnoughMem 			equ 448Ch
+_FPSMINUS9						equ 448Fh
+_HLMINUS9							equ 4492h
+_ErrOverflow					equ 4495h
+_ErrDivBy0						equ 4498h
+_ErrSingularMat				equ 449Bh
+_ErrDomain						equ 449Eh
+_ErrIncrement					equ 44A1h
+_ErrNon_Real					equ 44A4h
+_ErrSyntax						equ 44A7h
+_ErrDataType					equ 44AAh
+_ErrArgument					equ 44ADh
+_ErrDimMismatch				equ 44B0h
+_ErrDimension					equ 44B3h
+_ErrUndefined					equ 44B6h
+_ErrMemory						equ 44B9h
+_ErrInvalid						equ 44BCh
+_ErrBreak							equ 44BFh
+_ErrStat							equ 44C2h
+_ErrSignChange				equ 44C5h
+_ErrIterations				equ 44C8h
+_ErrBadGuess					equ 44CBh
+_ErrTolTooSmall				equ 44CEh
+_ErrStatPlot					equ 44D1h
+_ErrLinkXmit					equ 44D4h
+_JError								equ 44D7h
+_noErrorEntry					equ 44DAh
+_pushErrorHandleR			equ 44DDh
+_popErrorHandleR			equ 44E0h
+_strcopy							equ 44E3h
+_strCat								equ 44E6h
+_isInSet							equ 44E9h
+_sDone								equ 44ECh
+_serrort							equ 44EFh
+_sNameEq							equ 44F2h
+_sUnderScr						equ 44F5h
+_sFAIL								equ 44F8h
+_sName								equ 44FBh
+_sOK									equ 44FEh
+_PutMap								equ 4501h
+_PutC									equ 4504h
+_DispHL								equ 4507h
+_PutS									equ 450Ah
+_putpsb								equ 450Dh
+_PutPS								equ 4510h
+_wputps								equ 4513h
+_putbuf								equ 4516h
+_putbuf1							equ 4519h
+_wputc								equ 451Ch
+_wputs								equ 451Fh
+_wputsEOL							equ 4522h ;displays string in HL in big font, and uses ... if too long
+_wdispEOL							equ 4525h
+_whomeup							equ 4528h
+_setNumWindow					equ 452Bh ;based on current cursor position, sets winleft and similar (for input prompts)
+_newline							equ 452Eh
+_moveDown							equ 4531h
+_scrollUp							equ 4534h
+_shrinkWindow					equ 4537h
+_moveUp								equ 453Ah
+_scrollDown						equ 453Dh
+_ClrLCDFull						equ 4540h
+_ClrLCD								equ 4543h
+_ClrScrnFull					equ 4546h
+_ClrScrn							equ 4549h
+_ClrTxtShd						equ 454Ch
+_ClrWindow						equ 454Fh
+_EraseEOL							equ 4552h
+_EraseEOW							equ 4555h
+_HomeUp								equ 4558h
+_getcurloc						equ 455Bh
+_VPutMap							equ 455Eh
+_VPutS								equ 4561h
+_VPutSN								equ 4564h
+_vputsnG							equ 4567h
+_vputsnT							equ 456Ah
+_RunIndicOn						equ 456Dh
+_RunIndicOff					equ 4570h
+_saveCmdShadow				equ 4573h
+_saveShadow						equ 4576h
+_rstrShadow						equ 4579h
+_rstrpartial					equ 457Ch
+_rstrCurRow						equ 457Fh
+_rstrUnderMenu				equ 4582h
+_rstrbotrow						equ 4585h
+_saveTR								equ 4588h ;save top right corner of LCD so 2nd arrow can be displayed, indicinuse flag must be set
+_restoreTR						equ 458bh ;restore top right corner of LCD destroyed by an arrow. indicinuse flag must be set
+_GetKeyPress					equ 458Eh
+_GetTokLen						equ 4591h ;input: hl=pointer to token. output: a=lenght of string, hl=pointer to string on page 1
+_GET_TOK_STRNG				equ 4594h ;input: hl=pointer to token. output: op3=string of the token, a=length of string
+_GETTOKSTRING					equ 4597h ;input: DE=token. output: hl=pointer to the string on page 1
+_PUTBPATBUF2					equ 459Ah
+_PUTBPATBUF						equ 459Dh
+_putbPAT							equ 45A0h
+_putcCheckScrolL			equ 45A3h
+_DispEOL							equ 45A6h
+_fdispEOL							equ 45A9h
+_MAKEROWCMD						equ 45ACh
+_TOTOSTRP							equ 45AFh
+_SETVARNAME						equ 45B2h
+_DispDone							equ 45B5h
+_finishoutput					equ 45B8h
+_curBlink							equ 45BBh
+_CursorOff						equ 45BEh
+_hideCursor						equ 45C1h
+_CursorOn							equ 45C4h
+_showCursor						equ 45C7h
+_KeyToString					equ 45CAh
+_PULLDOWNCHK					equ 45CDh ;something wrong here
+_MenuCatCommon				equ 45D0h
+_ZIfCatalog						equ 45D3h
+_ZIfMatrixMenu				equ 45D6h ;_loadCurCat
+_LoadMenuNum					equ 45D9h
+_LoadMenuNumL					equ 45DCh
+_MenCatRet						equ 45DFh ;restores display as though a menu were just cleared (restores some flags too)
+_MenuEdKey						equ 45E5h
+_notalphnum						equ 45EBh
+_SaveSavedFlags				equ 45EEh
+_SetMenuFlags					equ 45F1h
+_RstrSomeFlags				equ 45F4h
+_RstrOScreen					equ 45F7h ;restores saveSScreen to the display
+_SaveOScreen					equ 45FAh ;stores display in saveSScreen
+_dispListName					equ 45FDh ;_SeeIfErrorCx
+_AdrMRow							equ 4606h
+_AdrMEle							equ 4609h
+_GETMATOP1A						equ 460Ch
+_GETM1TOOP1						equ 460Fh
+_GETM1TOP1A						equ 4612h
+_GetMToOP1						equ 4615h
+_PUTTOM1A							equ 4618h
+_PUTTOMA1							equ 461Bh
+_PutToMat							equ 461Eh
+_MAT_EL_DIV						equ 4621h
+_CMATFUN							equ 4624h
+_ROWECH_POLY					equ 4627h
+_ROWECHELON						equ 462Ah
+_AdrLEle							equ 462Dh
+_GETL1TOOP1						equ 4630h
+_GETL1TOP1A						equ 4633h
+_GetLToOP1						equ 4636h
+_GETL1TOOP2						equ 4639h
+_GETL1TOP2A						equ 463Ch
+_GETL2TOP1A						equ 463Fh
+_PUTTOLA1							equ 4642h
+_PutToL								equ 4645h
+_MAXMINLST						equ 4648h
+_LLOW									equ 464Bh
+_LHIGH								equ 464Eh
+_LSUM									equ 4651h
+CUMSUM								equ 4654h
+_ToFrac								equ 4657h
+_SEQSET								equ 465Ah
+_SEQSOLVE							equ 465Dh
+_CMP_NUM_INIT					equ 4660h
+_BinOPExec						equ 4663h
+_EXMEAN1							equ 4666h
+_SET2MVLPTRS					equ 4669h
+_SETMAT1							equ 466Ch
+_CREATETLIST					equ 466Fh
+_UnOPExec							equ 4672h
+_ThreeExec						equ 4675h
+_RESTOREERRNO					equ 4678h
+_FourExec							equ 467Bh
+_FiveExec							equ 467Eh
+_CPYTO2ES1						equ 4681h
+_CPYTO6ES1						equ 4684h
+_CPYTO1ES1						equ 4687h
+_CPYTO3ES1						equ 468Ah
+_CPYTO3ES2						equ 468Dh
+_CPYTO2ES2						equ 4690h
+_CPYTO1ES2						equ 4693h
+_CPYTO2ES3						equ 4696h
+_CPYTO1ES3						equ 4699h
+_CPYTO3ES4						equ 469Ch
+_CPYTO6ES3						equ 469Fh
+_CPYTO2ES4						equ 46A2h
+_CPYTO1ES4						equ 46A5h
+_CPYTO2ES5						equ 46A8h
+_CPYTO1ES5						equ 46ABh
+_CPYTO4EST						equ 46AEh
+_CPYTO2EST						equ 46B1h
+_CPYTO1EST						equ 46B4h
+_CPYTO2ES6						equ 46B7h
+_CPYTO1ES6						equ 46BAh
+_CPYTO2ES7						equ 46BDh
+_CPYTO1ES7						equ 46C0h
+_CPYTO2ES8						equ 46C3h
+_CPYTO1ES8						equ 46C6h
+_CPYTO1ES9						equ 46C9h
+_CPYTO2ES9						equ 46CCh
+_CPYTO2ES10						equ 46CFh
+_CPYTO1ES10						equ 46D2h
+_CPYTO2ES11						equ 46D5h
+_CPYTO1ES11						equ 46D8h
+_CPYTO2ES12						equ 46DBh
+_CPYTO1ES12						equ 46DEh
+_CPYTO2ES13						equ 46E1h
+_CPYTO1ES13						equ 46E4h
+_CPYTO1ES14						equ 46E7h
+_CPYTO1ES16						equ 46EAh
+_CPYTO1ES17						equ 46EDh
+_CPYTO1ES18						equ 46F0h
+_CPYTO1ES15						equ 46F3h
+_CPYTO2ES15						equ 46F6h
+_CPYO1TOEST						equ 46F9h
+_CPYO1TOES1						equ 46FCh
+_CPYO6TOES1						equ 46FFh
+_CPYO6TOES3						equ 4702h
+_CPYO1TOES2						equ 4705h
+_CPYO2TOES2						equ 4708h
+_CPYO1TOES3						equ 470Bh
+_CPYO1TOES4						equ 470Dh
+_CPYO1TOES5						equ 4711h
+_CPYO1TOES6						equ 4714h
+_CPYO1TOES7						equ 4717h
+_CPYO2TOES4						equ 471Ah
+_CPYO2TOES5						equ 471Dh
+_CPYO2TOES6						equ 4720h
+_CPYO2TOES7						equ 4723h
+_CPYO2TOES8						equ 4726h
+_CPYO2TOES9						equ 4729h
+_CPYO1TOES8						equ 472Ch
+_CPYO1TOES9						equ 472Fh
+_CPYO1TOES10					equ 4732h
+_CPYO1TOES11					equ 4735h
+_CPYO1TOES12					equ 4738h
+_CPYO1TOES13					equ 473Bh
+_CPYO1TOES14					equ 473Eh
+_CPYO1TOES15					equ 4741h
 _EVALF3A		equ 4744h
 _GetK			equ 4747h ;?
 _setTitlE		equ 474Ah
