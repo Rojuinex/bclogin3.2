@@ -7,9 +7,9 @@ At the time I wrote this program I did not have regular or even semi regular acc
 
 * [The Zilog z80 instruction manuel](http://www.zilog.com/docs/z80/um0080.pdf)
 
-* [TI's Guidebooks](http://education.ti.com/en/us/software/details/en/480DF008128C49DDA5E882E76CE9C8B2/swti83plussdk)
+* [TI's Guidebooks](http://education.ti.com/en/us/products/calculators/graphing-calculators/ti-84-plus-silver-edition/downloads/sdks)
 
-* [The TI 83 plus include file ti83plus.h](http://education.ti.com/en/us/software/details/en/480DF008128C49DDA5E882E76CE9C8B2/swti83plussdk)
+* [The TI 83 plus include file ti83plus.h](http://education.ti.com/en/us/products/calculators/graphing-calculators/ti-84-plus-silver-edition/downloads/sdks)
 
 * [Zilog z80 OpCode to Assembly reference sheet](http://nemesis.lonestar.org/computers/tandy/software/apps/m4/qd/opcodes.html)
 
